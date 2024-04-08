@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateLocationRequest;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Models\Location;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class LocationController extends Controller
@@ -32,9 +31,14 @@ class LocationController extends Controller
      */
     public function store(CreateLocationRequest $request)
     {
-        Location::create($request->validated());
+        try {
+            Location::create($request->validated());
 
-        return Redirect::route('location.create')->with('status', 'location-added');
+            return Redirect::route('location.create')->with('status', 'location-added');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan lokasi. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -60,11 +64,15 @@ class LocationController extends Controller
      */
     public function update(UpdateLocationRequest $request, Location $location)
     {
-        $validatedData = $request->validated();
-        $location->fill($validatedData);
-        $location->save();
-
-        return Redirect::route('location.edit', $location->id)->with('status', 'location-updated');
+        try {
+            $location->fill($request->validated());
+            $location->save();
+    
+            return Redirect::route('location.edit', $location->id)->with('status', 'location-updated');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui lokasi. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -72,8 +80,13 @@ class LocationController extends Controller
      */
     public function destroy(Location $location)
     {
-        $location->delete();
+        try {
+            $location->delete();
 
-        return Redirect::route('location.index');
+            return Redirect::route('location.index');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus lokasi. Silakan coba lagi.'])->withInput();
+        }
     }
 }
