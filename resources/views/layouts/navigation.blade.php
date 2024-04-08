@@ -12,8 +12,20 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('item.index')" :active="request()->routeIs('item.index')">
+                        {{ __('Item') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')">
+                        {{ __('Category') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('location.index')" :active="request()->routeIs('location.index')">
+                        {{ __('Location') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('placement.index')" :active="request()->routeIs('placement.index')">
+                        {{ __('Placement') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -67,8 +79,20 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('item.index')" :active="request()->routeIs('item.index')">
+                {{ __('Item') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')">
+                {{ __('Category') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('location.index')" :active="request()->routeIs('location.index')">
+                {{ __('Location') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('placement.index')" :active="request()->routeIs('placement.index')">
+                {{ __('Placement') }}
             </x-responsive-nav-link>
         </div>
 

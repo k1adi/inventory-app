@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Location;
+use App\Models\PlacementItem;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +25,17 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('item.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware(['auth', 'verified'])->group(function() {
+    Route::resources([
+        'item' => ItemController::class,
+        'category' => CategoryController::class,
+        'location' => LocationController::class,
+        'placement' => PlacementController::class,
+    ]);
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
