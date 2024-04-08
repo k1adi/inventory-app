@@ -16,8 +16,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $data['items'] = Item::with(['category'])->get();
-        return view('pages.item.index', $data);
+        return view('pages.item.index', [
+            'items' => Item::with(['category'])->get(),
+        ]);
     }
 
     /**
@@ -25,8 +26,9 @@ class ItemController extends Controller
      */
     public function create()
     {
-        $data['categories'] = Category::all();
-        return view('pages.item.create', $data);
+        return view('pages.item.create', [
+            'categories' => Category::all(),
+        ]);
     }
 
     /**

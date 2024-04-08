@@ -14,8 +14,9 @@ class LocationController extends Controller
      */
     public function index()
     {
-        $data['locations'] = Location::all();
-        return view('pages.location.index', $data);
+        return view('pages.location.index', [
+            'locations' => Location::all()
+        ]);
     }
 
     /**

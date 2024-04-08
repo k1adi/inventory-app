@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PlacementItemRequest;
+use App\Http\Requests\CreatePlacementItemRequest;
+use App\Http\Requests\UpdatePlacementItemRequest;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\PlacementItem;
@@ -10,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\HttpFoundation\Test\Constraint\ResponseIsRedirected;
 
 class PlacementItemController extends Controller
 {
@@ -19,8 +19,9 @@ class PlacementItemController extends Controller
      */
     public function index()
     {
-        $data['placements'] = PlacementItem::with(['location'])->get();
-        return view('pages.placement.index', $data);
+        return view('pages.placement.index', [
+            'placements' => PlacementItem::with(['location'])->get()
+        ]);
     }
 
     /**
@@ -37,7 +38,7 @@ class PlacementItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PlacementItemRequest $request)
+    public function store(CreatePlacementItemRequest $request)
     {
         $validator = Validator::make($request->all(), $request->rules());
 
@@ -67,17 +68,34 @@ class PlacementItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(PlacementItem $placementItem)
     {
-        //
+        return view('pages.placement.edit', [
+            'placementItem' => $placementItem,
+            'locations' => Location::all()
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePlacementItemRequest $request, PlacementItem $placementItem)
     {
-        //
+        $validator = Validator::make($request->all(), $request->rules());
+
+        if ($validator->fails()) {
+            // Jika validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan dan input sebelumnya
+            return back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $this->updatePlacementItem($request, $placementItem);
+
+            return Redirect::route('placement_item.edit', $placementItem->id)->with('status', 'placement-updated');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui catatan inventori. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -95,24 +113,37 @@ class PlacementItemController extends Controller
         }
     }
 
-    public function handlePlacementItem(Request $request){
+    public function handlePlacementItem(Request $request)
+    {
         $placementItem = PlacementItem::where('item_id', $request->item_id)
                         ->where('location_id', $request->location_id)
                         ->first();
 
         if ($placementItem) {
-            $this->updateQtyPlacementItem($placementItem, $request->qty);
+            $this->increaseQtyPlacementItem($placementItem, $request->qty);
         } else {
             $this->createNewPlacementItem($request);
         }
     }
 
-    public function updateQtyPlacementItem($placementItem, $qty) {
+    public function updatePlacementItem(Request $request, $inventory)
+    {   
+        // Cek lokasi id yang sedang diubah
+        if ($inventory->location_id == $request->location_id) {
+            $this->updateQtyPlacementItem($inventory, $request->qty);
+        } else {
+            $this->createNewPlacementItem($request);
+        }
+    }
+
+    public function increaseQtyPlacementItem($placementItem, $qty)
+    {
         $placementItem->qty += $qty;
         $placementItem->save();
     }
 
-    public function createNewPlacementItem($request) {
+    public function createNewPlacementItem($request)
+    {
         $userId = Auth::id();
         $userName = Auth::user()->name;
         $item = Item::findOrFail($request->item_id);
@@ -128,5 +159,11 @@ class PlacementItemController extends Controller
             'user_id' => $userId,
             'user_name' => $userName,
         ]);
+    }
+
+    public function updateQtyPlacementItem($placementItem, $qty)
+    {
+        $placementItem->qty = $qty;
+        $placementItem->save();
     }
 }

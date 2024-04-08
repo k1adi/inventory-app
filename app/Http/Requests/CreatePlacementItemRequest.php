@@ -6,7 +6,7 @@ use App\Models\Item;
 use App\Models\PlacementItem;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlacementItemRequest extends FormRequest
+class CreatePlacementItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,8 +30,9 @@ class PlacementItemRequest extends FormRequest
                 $item = Item::findOrFail($this->item_id);
                 $placementQty = PlacementItem::where('item_id', $this->item_id)->sum('qty');
                 $remainingQty = $item->qty - $placementQty;
+                
                 if ($value > $remainingQty) {
-                    $fail("Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: ($remainingQty)");
+                    $fail('Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty);
                 }
             }],
         ];
