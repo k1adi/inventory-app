@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PlacementController;
+use App\Http\Controllers\PlacementItemController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Location;
 use App\Models\PlacementItem;
@@ -33,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
         'item' => ItemController::class,
         'category' => CategoryController::class,
         'location' => LocationController::class,
-        'placement' => PlacementController::class,
+        'placement_item' => PlacementItemController::class,
     ]);
 });
 

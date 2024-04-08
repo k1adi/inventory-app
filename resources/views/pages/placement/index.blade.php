@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Placement') }}
+            {{ __('Inventory') }}
         </h2>
     </x-slot>
 
@@ -10,7 +10,7 @@
             <div class="flex justify-between items-center mb-3">
                 <label>Total Catatan Inventori: {{ $placements->count() }} </label>
     
-                <a href="{{ route('placement.create') }}">Tambah Catatan</a>
+                <a href="{{ route('placement_item.create') }}">Tambah Catatan</a>
             </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
@@ -39,11 +39,11 @@
                                     </td>
                                     <td>
                                         <div class="flex justify-start gap-4">
-                                            <a href="{{ route('item.edit', $item->id) }}">Edit</a>
-                                            <form action="{{ route('item.destroy', $item) }}" method="POST" class="">
+                                            <a href="{{ route('placement_item.edit', $item->id) }}">Edit</a>
+                                            <form action="{{ route('placement_item.destroy', $item) }}" method="POST" class="">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?')">Hapus</button>
+                                                <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus catatan ini?')">Hapus</button>
                                             </form>
                                         </div>
                                     </td>

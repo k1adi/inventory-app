@@ -19,7 +19,7 @@
                             </p>
                         </header>
 
-                        <form method="post" action="{{ route('item.store') }}" class="mt-6 space-y-6">
+                        <form method="post" action="{{ route('placement_item.store') }}" class="mt-6 space-y-6">
                             @csrf
                             @method('post')
 
@@ -30,17 +30,17 @@
                                         <option value="{{ $item->id }}"> ({{ $item->code }}) - {{ $item->name }} </option>
                                     @endforeach
                                 </x-select-option>
-                                <x-input-error class="mt-2" :messages="$errors->get('Item')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('item_id')" />
                             </div>
 
                             <div>
-                                <x-input-label for="category" :value="__('Kategori Item')" />
-                                <x-select-option id="category_id" name="category_id" required>
+                                <x-input-label for="location_id" :value="__('Kategori Item')" />
+                                <x-select-option id="location_id" name="location_id" required>
                                     @foreach ($locations as $item)
                                         <option value="{{ $item->id }}"> {{ $item->name }} </option>
                                     @endforeach
                                 </x-select-option>
-                                <x-input-error class="mt-2" :messages="$errors->get('category_id')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('location_id')" />
                             </div>
                             
                             <div>
@@ -52,7 +52,7 @@
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Tambah.') }}</x-primary-button>
                     
-                                @if (session('status') === 'inventory-added')
+                                @if (session('status') === 'placement-success')
                                     <p
                                         x-data="{ show: true }"
                                         x-show="show"

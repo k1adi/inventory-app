@@ -49,7 +49,6 @@ class ItemController extends Controller
             // Handle error dan kirim pesan error ke halaman sebelumnya
             return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan item. Silakan coba lagi.'])->withInput();
         }
-        
     }
 
     /**
@@ -107,6 +106,5 @@ class ItemController extends Controller
             // Handle error dan kirim pesan error ke halaman sebelumnya
             return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus item. Silakan coba lagi.'])->withInput();
         }
-        
     }
 }

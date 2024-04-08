@@ -21,7 +21,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Ruang Manajer',
             'qty' => 5,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
@@ -33,7 +33,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Ruang Meeting',
             'qty' => 10,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
@@ -45,7 +45,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Lantai 1',
             'qty' => 3,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
@@ -57,7 +57,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Lantai 2',
             'qty' => 5,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
@@ -69,7 +69,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Lantai 1',
             'qty' => 3,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
@@ -81,7 +81,7 @@ class PlacementSeeder extends Seeder
             'location_name' => 'Lantai 2',
             'qty' => 5,
             'user_id' => 11,
-            'user_name' => 'Admin',
+            'user_name' => 'admin',
             'created_at' => now(),
             'updated_at' => null,
         ]);
