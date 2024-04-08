@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class PlacementItemController extends Controller
 {
@@ -43,11 +44,11 @@ class PlacementItemController extends Controller
         $validator = Validator::make($request->all(), $request->rules());
 
         if ($validator->fails()) {
-            // Jika validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan dan input sebelumnya
             return back()->withErrors($validator)->withInput();
         }
 
         try {
+            // Kirim request ke fungsi handlePlacementItem agar kode lebih rapih
             $this->handlePlacementItem($request);
 
             return Redirect::route('placement_item.create')->with('status', 'placement-success');
@@ -84,16 +85,19 @@ class PlacementItemController extends Controller
         $validator = Validator::make($request->all(), $request->rules());
 
         if ($validator->fails()) {
-            // Jika validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan dan input sebelumnya
             return back()->withErrors($validator)->withInput();
         }
 
         try {
+            // Kirim request beserta objek placementItem ke fungsi lain agar kode lebih rapih
             $this->updatePlacementItem($request, $placementItem);
 
             return Redirect::route('placement_item.edit', $placementItem->id)->with('status', 'placement-updated');
+        } catch (ValidationException $e) {
+            // Tangkap pesan error pada validation exception
+            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Handle error dan kirim pesan error ke halaman sebelumnya
+            // Tangkap pesan error umum
             return back()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui catatan inventori. Silakan coba lagi.'])->withInput();
         }
     }
@@ -115,13 +119,16 @@ class PlacementItemController extends Controller
 
     public function handlePlacementItem(Request $request)
     {
+        // Cek baris data pada table placement_item apakah memiliki item_id dan location_id yang sama
         $placementItem = PlacementItem::where('item_id', $request->item_id)
                         ->where('location_id', $request->location_id)
                         ->first();
 
         if ($placementItem) {
+            // qty pada kolom baris yang sama akan ditambah dengan request->qty
             $this->increaseQtyPlacementItem($placementItem, $request->qty);
         } else {
+            // tambah baris baru jika item_id dengan lokasi_id belum ada pada table
             $this->createNewPlacementItem($request);
         }
     }
@@ -130,9 +137,11 @@ class PlacementItemController extends Controller
     {   
         // Cek lokasi id yang sedang diubah
         if ($inventory->location_id == $request->location_id) {
+            // Ubah nilai qty pada table jika lokasi_id tidak ikut diubah
             $this->updateQtyPlacementItem($inventory, $request->qty);
         } else {
-            $this->createNewPlacementItem($request);
+            // Validasi jumlah qty yang tersedia untuk lokasi baru
+            $this->validateCreatePlacementQty($request);
         }
     }
 
@@ -165,5 +174,21 @@ class PlacementItemController extends Controller
     {
         $placementItem->qty = $qty;
         $placementItem->save();
+    }
+
+    public function validateCreatePlacementQty($request){
+        $itemQty = Item::findOrFail($request->item_id)->qty;
+        $placementQty = PlacementItem::where('item_id', $request->item_id)->sum('qty');
+        $remainingQty = $itemQty - $placementQty;
+
+        // Cek jika qty yang diinput tidak melebihi qty yang tersedia
+        if($request->qty > $remainingQty) {
+            throw ValidationException::withMessages([
+                'qty' => ['Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty]
+            ]);
+        } else {
+            // Jalankan fungsi tambah data baru pada table placement_item
+            $this->createNewPlacementItem($request);
+        }
     }
 }
