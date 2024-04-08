@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
-use Dotenv\Repository\RepositoryInterface;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class CategoryController extends Controller
@@ -33,9 +31,14 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        Category::create($request->validated());
+        try {
+            Category::create($request->validated());
 
-        return Redirect::route('category.create')->with('status', 'category-added');
+            return Redirect::route('category.create')->with('status', 'category-added');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan kategori. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -61,11 +64,15 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $validatedData = $request->validated();
-        $category->fill($validatedData);
-        $category->save();
-
-        return Redirect::route('category.edit', $category->id)->with('status', 'category-updated');
+        try {
+            $category->fill($request->validated());
+            $category->save();
+    
+            return Redirect::route('category.edit', $category->id)->with('status', 'category-updated');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui kategori. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -73,8 +80,13 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        try {
+            $category->delete();
 
-        return Redirect::route('category.index');
+            return Redirect::route('category.index');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus kategori. Silakan coba lagi.'])->withInput();
+        }
     }
 }
