@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PlacementItem extends Model
 {
@@ -19,8 +17,8 @@ class PlacementItem extends Model
         'user_id', 'user_name'
     ];
 
-    public function item(): BelongsToMany {
-        return $this->belongsToMany(Item::class, 'item_id');
+    public function item(): BelongsTo {
+        return $this->belongsTo(Item::class, 'item_id');
     }
 
     public function location(): BelongsTo {
