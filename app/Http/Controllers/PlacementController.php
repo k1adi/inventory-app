@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
+use App\Models\Location;
+use App\Models\PlacementItem;
 use Illuminate\Http\Request;
 
 class PlacementController extends Controller
@@ -11,7 +14,8 @@ class PlacementController extends Controller
      */
     public function index()
     {
-        return view('pages.placement.index');
+        $data['placements'] = PlacementItem::with(['location'])->get();
+        return view('pages.placement.index', $data);
     }
 
     /**
@@ -19,7 +23,10 @@ class PlacementController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.placement.create', [
+            'items' => Item::all(),
+            'locations' => Location::all()
+        ]);
     }
 
     /**

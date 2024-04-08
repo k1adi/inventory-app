@@ -14,31 +14,31 @@ class LocationSeeder extends Seeder
     public function run(): void
     {
         Location::create([
-            'name' => 'Gudang',
+            'name' => 'Gudang', // 1
         ]);
         Location::create([
-            'name' => 'Lantai 1',
+            'name' => 'Lantai 1',  // 2
         ]);
         Location::create([
-            'name' => 'Lantai 2',
+            'name' => 'Lantai 2',  // 3
         ]);
         Location::create([
-            'name' => 'Lantai 3',
+            'name' => 'Lantai 3',  // 4
         ]);
         Location::create([
-            'name' => 'Ruang Manajer',
+            'name' => 'Ruang Manajer',  // 5
         ]);
         Location::create([
-            'name' => 'Ruang Meeting',
+            'name' => 'Ruang Meeting',  // 6
         ]);
         Location::create([
-            'name' => 'Ruang Operasional',
+            'name' => 'Ruang Operasional',  // 7
         ]);
         Location::create([
-            'name' => 'Ruang Marketing',
+            'name' => 'Ruang Marketing',  // 8
         ]);
         Location::create([
-            'name' => 'Ruang Akunting',
+            'name' => 'Ruang Akunting',  // 9
         ]);
     }
 }

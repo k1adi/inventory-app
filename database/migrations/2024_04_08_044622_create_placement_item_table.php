@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('trx_placement_item', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('item_id');
+            $table->string('item_code');
             $table->string('item_name');
             $table->unsignedBigInteger('location_id');
             $table->string('location_name');
