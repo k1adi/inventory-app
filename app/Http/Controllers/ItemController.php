@@ -6,7 +6,6 @@ use App\Http\Requests\CreateItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Category;
 use App\Models\Item;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,14 +37,19 @@ class ItemController extends Controller
         $validator = Validator::make($request->all(), $request->rules());
 
         if ($validator->fails()) {
-            // Validasi gagal, lakukan sesuatu seperti menangani pesan kesalahan
-            // Anda juga bisa melakukan redirect kembali ke halaman sebelumnya dengan pesan kesalahan
+            // Jika validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan dan input sebelumnya
             return back()->withErrors($validator)->withInput();
         }
 
-        Item::create($request->validated());
+        try {
+            Item::create($request->validated());
 
-        return Redirect::route('item.create')->with('status', 'item-added');
+            return Redirect::route('item.create')->with('status', 'item-added');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan item. Silakan coba lagi.'])->withInput();
+        }
+        
     }
 
     /**
@@ -72,11 +76,22 @@ class ItemController extends Controller
      */
     public function update(UpdateItemRequest $request, Item $item)
     {
-        $validatedData = $request->validated();
-        $item->fill($validatedData);
-        $item->save();
+        $validator = Validator::make($request->all(), $request->rules());
 
-        return Redirect::route('item.edit', $item->id)->with('status', 'item-updated');
+        if ($validator->fails()) {
+            // Jika validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan dan input sebelumnya
+            return back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $item->fill($request->validated());
+            $item->save();
+
+            return Redirect::route('item.edit', $item->id)->with('status', 'item-updated');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui item. Silakan coba lagi.'])->withInput();
+        }
     }
 
     /**
@@ -84,8 +99,14 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        $item->delete();
+        try {
+            $item->delete();
 
-        return Redirect::route('item.index');
+            return Redirect::route('item.index');
+        } catch (\Exception $e) {
+            // Handle error dan kirim pesan error ke halaman sebelumnya
+            return Redirect::back()->withErrors(['error' => 'Terjadi kesalahan saat menghapus item. Silakan coba lagi.'])->withInput();
+        }
+        
     }
 }
