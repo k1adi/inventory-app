@@ -12,6 +12,7 @@ class Item extends Model
 {
     use HasFactory;
     protected $table = 'mst_items';
+    protected $fillable = ['code', 'name', 'qty', 'category_id'];
 
     public function category(): BelongsTo {
         return $this->belongsTo(Category::class, 'category_id');

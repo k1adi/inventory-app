@@ -10,6 +10,8 @@ class Category extends Model
 {
     use HasFactory;
     protected $table = 'mst_categories';
+    protected $fillable = ['name'];
+    public $timestamps = false;
 
     public function items(): HasMany {
         return $this->hasMany(Item::class, 'category_id');

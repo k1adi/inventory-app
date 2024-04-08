@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('mst_items', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
             $table->string('name');
             $table->integer('qty');
             $table->unsignedBigInteger('category_id');

@@ -10,6 +10,8 @@ class Location extends Model
 {
     use HasFactory;
     protected $table = 'mst_locations';
+    protected $fillable = ['name'];
+    public $timestamps = false;
 
     public function placement_item(): HasMany {
         return $this->hasMany(PlacementItem::class, 'location_id');

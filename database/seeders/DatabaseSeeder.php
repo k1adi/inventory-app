@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use PhpParser\Node\Stmt\Catch_;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,12 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@prisma.com',
-            'password' => bcrypt('admin123'),
+        $this->call([
+            UserSeeder::class,
+            CategorySeeder::class,
+            LocationSeeder::class,
+            ItemSeeder::class
         ]);
     }
 }
