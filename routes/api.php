@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\api\CategoryController;
-use App\Http\Controllers\api\InventoryController;
-use App\Http\Controllers\api\ItemController;
-use App\Http\Controllers\api\LocationController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\LocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

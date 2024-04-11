@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
+use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryDetailResource;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -26,7 +29,7 @@ class CategoryController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Berhasil mendapatkan data kategori.',
-            'data' => $category
+            'data' => CategoryResource::collection($category)
         ], 200);
     }
 
@@ -41,9 +44,24 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $categoryDetail = Category::where('id', $id)->with('items')->first();
+
+        if(!$categoryDetail){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan kategori dengan ID tersebut!',
+                'data' => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Berhasil mendapatkan kategori detail.',
+            'data' => new CategoryDetailResource($categoryDetail),
+        ], 200);
     }
 
     /**

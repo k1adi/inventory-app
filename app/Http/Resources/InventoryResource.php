@@ -15,13 +15,23 @@ class InventoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // return parent::toArray($request);
+        // return [
+        //     'id' => MyHelper::encrypt_id($this->id),
+        //     'item_code' => $this->item->code,
+        //     'item_name' => $this->item->name,
+        //     'location_name' => $this->location->name,
+        //     'qty' => $this->qty,
+        //     'user_name' => $this->user->name,
+        //     'created_at' => MyHelper::formatDate($this->created_at),
+        //     'updated_at' => MyHelper::formatDate($this->updated_at),
+        // ];
         return [
             'id' => MyHelper::encrypt_id($this->id),
-            'item_code' => $this->item_code,
-            'item_name' => $this->item_name,
-            'location_name' => $this->location_name,
+            'item_id' => MyHelper::encrypt_id($this->item_id),
             'qty' => $this->qty,
-            'user_name' => $this->user_name,
+            'location_id' => MyHelper::encrypt_id($this->location_id),
+            'user_id' => MyHelper::encrypt_id($this->user_id),
             'created_at' => MyHelper::formatDate($this->created_at),
             'updated_at' => MyHelper::formatDate($this->updated_at),
         ];

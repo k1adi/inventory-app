@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
+use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\LocationDetailResource;
+use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Locale;
 
 class LocationController extends Controller
 {
@@ -26,7 +30,7 @@ class LocationController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Berhasil mendapatkan data lokasi.',
-            'data' => $locations
+            'data' => LocationResource::collection($locations)
         ], 200);
     }
 
@@ -41,9 +45,24 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $locationDetail = Location::where('id', $id)->with('placement_item.item', 'placement_item.user')->first();
+
+        if(!$locationDetail){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan lokasi dengan ID tersebut!',
+                'data' => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Berhasil mendapatkan lokasi detail.',
+            'data' => new LocationDetailResource($locationDetail),
+        ], 200);
     }
 
     /**
