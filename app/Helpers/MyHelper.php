@@ -11,13 +11,13 @@ class MyHelper {
     }
 
     public static function encrypt_id($id) {
-        $encrypted = (($id * env("SECRET_KEY")) + 553) * 7;
+        $encrypted = (($id * env("SECRET_KEY1")) + env("SECRET_KEY2")) * env("SECRET_KEY3");
 
         return $encrypted;
     }
 
     public static function decrypt_id($id) {
-        $decrypted = (($id / 7) - 553) / env("SECRET_KEY");
+        $decrypted = (($id / env("SECRET_KEY3")) - env("SECRET_KEY2")) / env("SECRET_KEY1");
 
         return $decrypted;
     }
