@@ -44,7 +44,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function placement_item(): HasMany {
-        return $this->hasMany(PlacementItem::class, 'user_id');
+    public function inventories(): HasMany {
+        return $this->hasMany(Inventory::class, 'user_id');
     }
 }

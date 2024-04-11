@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class PlacementItem extends Model
+class Inventory extends Model
 {
     use HasFactory;
-    protected $table = 'trx_placement_item';
+    protected $table = 'trx_inventory';
     protected $fillable = [
         'item_id', 'item_code', 'item_name',
         'location_id', 'location_name', 

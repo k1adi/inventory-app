@@ -1,13 +1,10 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LocationController;
-use App\Http\Controllers\PlacementController;
-use App\Http\Controllers\PlacementItemController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Location;
-use App\Models\PlacementItem;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
         'item' => ItemController::class,
         'category' => CategoryController::class,
         'location' => LocationController::class,
-        'placement_item' => PlacementItemController::class,
+        'inventory' => InventoryController::class,
     ]);
 });
 

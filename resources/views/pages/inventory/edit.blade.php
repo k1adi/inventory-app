@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Tambah Catatan') }}
+            {{ __('Edit Catatan') }}
         </h2>
     </x-slot>
 
@@ -12,24 +12,21 @@
                     <section>
                         <header>
                             <h2 class="text-lg font-medium text-gray-900">
-                                {{ __('Tambah Catatan') }}
+                                {{ __('Perbarui Catatan') }}
                             </h2>
                             <p class="mt-1 text-sm text-gray-600">
-                                {{ __("Pencatatan inventori setiap item beserta lokasinya.") }}
+                                {{ __("Pengeditan catatan inventori lokasi item beserta jumlahnya.") }}
                             </p>
                         </header>
 
-                        <form method="post" action="{{ route('placement_item.store') }}" class="mt-6 space-y-6">
+                        <form method="post" action="{{ route('inventory.update', $inventory) }}" class="mt-6 space-y-6">
                             @csrf
-                            @method('post')
+                            @method('PUT')
 
                             <div>
-                                <x-input-label for="item_id" :value="__('Item')" />
-                                <x-select-option id="item_id" name="item_id" required>
-                                    @foreach ($items as $item)
-                                        <option value="{{ $item->id }}"> ({{ $item->code }}) - {{ $item->name }} </option>
-                                    @endforeach
-                                </x-select-option>
+                                <x-input-label :value="__('Item')" />
+                                <x-text-input type="hidden" name="item_id" value="{{ $inventory->item_id }}" />
+                                <x-text-input type="text" class="mt-1 block w-full" value="({{ $inventory->item_code }}) - {{ $inventory->item_name }}" readonly disabled/>
                                 <x-input-error class="mt-2" :messages="$errors->get('item_id')" />
                             </div>
 
@@ -37,7 +34,9 @@
                                 <x-input-label for="location_id" :value="__('Lokasi Item')" />
                                 <x-select-option id="location_id" name="location_id" required>
                                     @foreach ($locations as $item)
-                                        <option value="{{ $item->id }}"> {{ $item->name }} </option>
+                                        <option value="{{ $item->id }}"> 
+                                            {{ $item->name }} 
+                                        </option>
                                     @endforeach
                                 </x-select-option>
                                 <x-input-error class="mt-2" :messages="$errors->get('location_id')" />
@@ -45,14 +44,14 @@
                             
                             <div>
                                 <x-input-label for="qty" :value="__('Qty Item')" />
-                                <x-text-input id="qty" name="qty" type="text" pattern="[0-9]*" class="mt-1 block w-full" :value="old('qty')" required autocomplete="qty" />
+                                <x-text-input id="qty" name="qty" type="text" pattern="[0-9]*" class="mt-1 block w-full" :value="old('qty', $inventory->qty)" required autocomplete="qty" />
                                 <x-input-error class="mt-2" :messages="$errors->get('qty')" />
                             </div>
 
                             <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Tambah.') }}</x-primary-button>
+                                <x-primary-button>{{ __('Edit.') }}</x-primary-button>
                     
-                                @if (session('status') === 'placement-success')
+                                @if (session('status') === 'inventory-updated')
                                     <p
                                         x-data="{ show: true }"
                                         x-show="show"

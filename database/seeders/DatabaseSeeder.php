@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             LocationSeeder::class,
             ItemSeeder::class,
-            PlacementSeeder::class
+            InventorySeeder::class
         ]);
     }
 }

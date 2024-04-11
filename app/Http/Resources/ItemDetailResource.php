@@ -16,7 +16,7 @@ class ItemDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $totalPlacement = $this->placement_item->sum('qty');
+        $totalPlacement = $this->inventories->sum('qty');
         $availableQty = $this->qty - $totalPlacement;
 
         return [
@@ -29,7 +29,7 @@ class ItemDetailResource extends JsonResource
             'category' => $this->category->name,
             'created_at' => MyHelper::formatDate($this->created_at),
             'updated_at' => MyHelper::formatDate($this->updated_at),
-            'placement_item' => $this->placement_item->map(function ($inventory) {
+            'placement_item' => $this->inventories->map(function ($inventory) {
                 return [
                     'location' => $inventory->location->name,
                     'qty' => $inventory->qty,

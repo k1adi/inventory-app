@@ -2,18 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\PlacementItem;
+use App\Models\Inventory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PlacementSeeder extends Seeder
+class InventorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 1,
             'item_code' => 'kode001',
             'item_name' => 'Pulpen',
@@ -23,7 +23,7 @@ class PlacementSeeder extends Seeder
             'user_id' => 11,
             'user_name' => 'admin',
         ]);
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 1,
             'item_code' => 'kode001',
             'item_name' => 'Pulpen',
@@ -33,7 +33,7 @@ class PlacementSeeder extends Seeder
             'user_id' => 11,
             'user_name' => 'admin',
         ]);
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 3,
             'item_code' => 'kode003',
             'item_name' => 'Monitor',
@@ -43,7 +43,7 @@ class PlacementSeeder extends Seeder
             'user_id' => 11,
             'user_name' => 'admin',
         ]);
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 3,
             'item_code' => 'kode003',
             'item_name' => 'Monitor',
@@ -53,7 +53,7 @@ class PlacementSeeder extends Seeder
             'user_id' => 11,
             'user_name' => 'admin',
         ]);
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 4,
             'item_code' => 'kode004',
             'item_name' => 'Keyboard',
@@ -63,7 +63,7 @@ class PlacementSeeder extends Seeder
             'user_id' => 11,
             'user_name' => 'admin',
         ]);
-        PlacementItem::create([
+        Inventory::create([
             'item_id' => 4,
             'item_code' => 'kode004',
             'item_name' => 'Keyboard',

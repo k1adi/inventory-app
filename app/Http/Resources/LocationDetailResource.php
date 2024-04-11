@@ -19,7 +19,7 @@ class LocationDetailResource extends JsonResource
         return [
             'id' => MyHelper::encrypt_id($this->id),
             'name' => $this->name,
-            'inventory' => $this->placement_item->map(function ($inventory) {
+            'inventory' => $this->inventories->map(function ($inventory) {
                 return [
                     'id' => MyHelper::encrypt_id($inventory->id),
                     'item_code' => $inventory->item->code,

@@ -13,7 +13,7 @@ class Location extends Model
     protected $fillable = ['name'];
     public $timestamps = false;
 
-    public function placement_item(): HasMany {
-        return $this->hasMany(PlacementItem::class, 'location_id');
+    public function inventories(): HasMany {
+        return $this->hasMany(Inventory::class, 'location_id');
     }
 }

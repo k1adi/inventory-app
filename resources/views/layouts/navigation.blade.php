@@ -24,7 +24,7 @@
                         {{ __('Location') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('placement_item.index')" :active="request()->routeIs('placement_item.index')">
+                    <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.index')">
                         {{ __('Inventory') }}
                     </x-nav-link>
                 </div>
@@ -91,7 +91,7 @@
                 {{ __('Location') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('placement_item.index')" :active="request()->routeIs('placement_item.index')">
+            <x-responsive-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.index')">
                 {{ __('Inventory') }}
             </x-responsive-nav-link>
         </div>
