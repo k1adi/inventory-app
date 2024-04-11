@@ -13,10 +13,20 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $category = Category::all();
+
+        if($category->isEmpty()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data kategori tidak ditemukan!",
+                "data" => [],
+            ], 404);
+        }
+
         return response()->json([
             'status' => true,
-            'message' => 'Berhasil mendapatkan data kategori',
-            'data' => Category::all()
+            'message' => 'Berhasil mendapatkan data kategori.',
+            'data' => $category
         ], 200);
     }
 

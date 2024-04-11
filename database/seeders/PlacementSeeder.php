@@ -22,8 +22,6 @@ class PlacementSeeder extends Seeder
             'qty' => 5,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
         PlacementItem::create([
             'item_id' => 1,
@@ -34,8 +32,6 @@ class PlacementSeeder extends Seeder
             'qty' => 10,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
         PlacementItem::create([
             'item_id' => 3,
@@ -46,8 +42,6 @@ class PlacementSeeder extends Seeder
             'qty' => 3,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
         PlacementItem::create([
             'item_id' => 3,
@@ -58,8 +52,6 @@ class PlacementSeeder extends Seeder
             'qty' => 5,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
         PlacementItem::create([
             'item_id' => 4,
@@ -70,8 +62,6 @@ class PlacementSeeder extends Seeder
             'qty' => 3,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
         PlacementItem::create([
             'item_id' => 4,
@@ -82,8 +72,6 @@ class PlacementSeeder extends Seeder
             'qty' => 5,
             'user_id' => 11,
             'user_name' => 'admin',
-            'created_at' => now(),
-            'updated_at' => null,
         ]);
     }
 }

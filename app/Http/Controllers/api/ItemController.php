@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use Illuminate\Http\Request;
 
@@ -13,11 +14,21 @@ class ItemController extends Controller
      */
     public function index()
     {
-       return response()->json([
-        'status' => true,
-        'message' => 'Berhasil mendapatkan data item',
-        'data' => Item::with(['category'])->get()
-    ], 200);
+        $itemData = Item::with(['category'])->get();
+
+        if($itemData->isEmpty()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data item tidak ditemukan!",
+                "data" => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Berhasil mendapatkan data item.',
+            'data' => ItemResource::collection($itemData)
+        ], 200);
     }
 
     /**

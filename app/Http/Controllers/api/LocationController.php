@@ -13,10 +13,20 @@ class LocationController extends Controller
      */
     public function index()
     {
+        $locations = Location::all();
+
+        if($locations->isEmpty()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data lokasi tidak ditemukan!",
+                "data" => [],
+            ], 404);
+        }
+
         return response()->json([
             'status' => true,
-            'message' => 'Berhasil mendapatkan data lokasi',
-            'data' => Location::all()
+            'message' => 'Berhasil mendapatkan data lokasi.',
+            'data' => $locations
         ], 200);
     }
 

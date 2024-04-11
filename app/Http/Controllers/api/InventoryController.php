@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InventoryResource;
 use App\Models\PlacementItem;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,20 @@ class InventoryController extends Controller
      */
     public function index()
     {
+        $placementItemData = PlacementItem::with(['item', 'location', 'user'])->get();
+
+        if($placementItemData->isEmpty()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data inventori tidak ditemukan!",
+                "data" => [],
+            ], 404);
+        }
+
         return response()->json([
             'status' => true,
-            'message' => 'Berhasil mendapatkan data inventori',
-            'data' => PlacementItem::with(['item', 'location', 'user'])->get(),
+            'message' => 'Berhasil mendapatkan data inventori.',
+            'data' => InventoryResource::collection($placementItemData)
         ], 200);
     }
 
