@@ -26,16 +26,16 @@ class CategorySeeder extends Seeder
             'name' => 'Kendaraan', // 4
         ]);
         Category::create([
-            'name' => 'Keamanan', // 5
+            'name' => 'Alat Keamanan', // 5
         ]);
         Category::create([
-            'name' => 'Kantin', // 6
+            'name' => 'Alat Makan', // 6
         ]);
         Category::create([
-            'name' => 'Kebersihan', // 7
+            'name' => 'Alat Kebersihan', // 7
         ]);
         Category::create([
-            'name' => 'Listrik', // 8
+            'name' => 'Kelistrikan', // 8
         ]);
     }
 }
