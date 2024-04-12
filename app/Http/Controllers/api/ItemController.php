@@ -62,9 +62,7 @@ class ItemController extends Controller
     public function show(string $encryptId)
     {
         $id = MyHelper::decrypt_id($encryptId);
-        $itemDetail = Item::where('id', $id)
-                      ->with('category', 'inventories.location')
-                      ->first();
+        $itemDetail = Item::with('category', 'inventories.location')->find($id);
 
         if(!$itemDetail) {
             return response()->json([

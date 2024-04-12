@@ -12,9 +12,6 @@ use App\Models\Item;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
-use Locale;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class InventoryController extends Controller
 {
@@ -63,9 +60,8 @@ class InventoryController extends Controller
     public function show(string $encryptId)
     {
         $id = MyHelper::decrypt_id($encryptId);
-        $inventoryDetail = Inventory::where('id', $id)
-                          ->with('item.category', 'location', 'user')
-                          ->first();
+        $inventoryDetail = Inventory::with('item.category', 'location', 'user')->find($id);
+        
         if(!$inventoryDetail) {
             return response()->json([
                 'status' => false,

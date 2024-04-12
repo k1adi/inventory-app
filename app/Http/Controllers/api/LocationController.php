@@ -9,7 +9,6 @@ use App\Http\Resources\LocationDetailResource;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
-use Locale;
 
 class LocationController extends Controller
 {
@@ -62,7 +61,7 @@ class LocationController extends Controller
     public function show(string $encryptId)
     {
         $id = MyHelper::decrypt_id($encryptId);
-        $locationDetail = Location::where('id', $id)->with('inventories.item', 'inventories.user')->first();
+        $locationDetail = Location::with('inventories.item', 'inventories.user')->find($id);
 
         if(!$locationDetail){
             return response()->json([

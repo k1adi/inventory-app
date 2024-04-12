@@ -9,8 +9,6 @@ use App\Http\Resources\CategoryDetailResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -63,7 +61,7 @@ class CategoryController extends Controller
     public function show(string $encryptId)
     {
         $id = MyHelper::decrypt_id($encryptId);
-        $categoryDetail = Category::where('id', $id)->with('items')->first();
+        $categoryDetail = Category::with('items')->find($id);
 
         if(!$categoryDetail){
             return response()->json([
