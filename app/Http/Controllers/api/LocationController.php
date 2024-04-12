@@ -22,7 +22,7 @@ class LocationController extends Controller
         if($locations->isEmpty()) {
             return response()->json([
                 "status" => false,
-                "message" => "Data lokasi tidak ditemukan!",
+                "message" => "Data lokasi masih kosong!",
                 "data" => [],
             ], 404);
         }
@@ -89,8 +89,31 @@ class LocationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $location = Location::find($id);
+
+        if(!$location){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan lokasi dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $location->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menghapus lokasi.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus lokasi!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

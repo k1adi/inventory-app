@@ -26,7 +26,7 @@ class InventoryController extends Controller
         if($inventoryData->isEmpty()) {
             return response()->json([
                 "status" => false,
-                "message" => "Data inventori tidak ditemukan!",
+                "message" => "Data inventori masih kosong!",
                 "data" => [],
             ], 404);
         }
@@ -88,9 +88,32 @@ class InventoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $inventory = Inventory::find($id);
+
+        if(!$inventory){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan inventori dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $inventory->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menghapus inventori.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus inventori!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function handleInventory($request){

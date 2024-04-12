@@ -23,7 +23,7 @@ class ItemController extends Controller
         if($itemData->isEmpty()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Data item tidak ditemukan!',
+                'message' => 'Data item masih kosong!',
                 'data' => [],
             ], 404);
         }
@@ -90,8 +90,31 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $item = Item::find($id);
+
+        if(!$item){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan item dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $item->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menghapus item.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus item!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -22,7 +22,7 @@ class CategoryController extends Controller
         if($category->isEmpty()) {
             return response()->json([
                 "status" => false,
-                "message" => "Data kategori tidak ditemukan!",
+                "message" => "Data kategori masih kosong!",
                 "data" => [],
             ], 404);
         }
@@ -89,8 +89,31 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $category = Category::find($id);
+
+        if(!$category){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan kategori dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $category->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menghapus kategori.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus kategori!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
