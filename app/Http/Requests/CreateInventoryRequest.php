@@ -27,12 +27,16 @@ class CreateInventoryRequest extends FormRequest
             'item_id' => ['required', 'integer', 'exists:mst_items,id'],
             'location_id' => ['required', 'integer', 'exists:mst_locations,id'],
             'qty' => ['required', 'integer', function($attr, $value, $fail) {
-                $item = Item::findOrFail($this->item_id);
-                $placementQty = Inventory::where('item_id', $this->item_id)->sum('qty');
-                $remainingQty = $item->qty - $placementQty;
-                
-                if ($value > $remainingQty) {
-                    $fail('Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty);
+                $item = Item::find($this->item_id);
+                if(!$item){
+                    $fail('Gagal mendapatkan qty dengan ID item tersebut!');
+                } else {
+                    $placementQty = Inventory::where('item_id', $this->item_id)->sum('qty');
+                    $remainingQty = $item->qty - $placementQty;
+                    
+                    if ($value > $remainingQty) {
+                        $fail('Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty);
+                    }
                 }
             }],
         ];

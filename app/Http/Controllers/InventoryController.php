@@ -119,14 +119,14 @@ class InventoryController extends Controller
 
     public function handleInventory(Request $request)
     {
-        // Cek baris data pada table placement_item apakah memiliki item_id dan location_id yang sama
-        $invetory = Inventory::where('item_id', $request->item_id)
+        // Cek baris data pada table inventory apakah memiliki item_id dan location_id yang sama
+        $inventory = Inventory::where('item_id', $request->item_id)
                     ->where('location_id', $request->location_id)
                     ->first();
 
-        if ($invetory) {
+        if ($inventory) {
             // qty pada kolom baris yang sama akan ditambah dengan request->qty
-            $this->increaseQtyInventory($invetory, $request->qty);
+            $this->increaseQtyInventory($inventory, $request->qty);
         } else {
             // tambah baris baru jika item_id dengan lokasi_id belum ada pada table
             $this->createNewInventory($request);
@@ -187,7 +187,7 @@ class InventoryController extends Controller
                 'qty' => ['Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty]
             ]);
         } else {
-            // Jalankan fungsi tambah data baru pada table placement_item
+            // Jalankan fungsi tambah data baru pada table inventory
             $this->createNewInventory($request);
         }
     }

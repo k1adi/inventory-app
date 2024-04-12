@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateItemRequest;
 use App\Http\Resources\ItemDetailResource;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
@@ -37,9 +38,22 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateItemRequest $request)
     {
-        //
+        try{
+            Item::create($request->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menambahkan item.'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan item!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -49,7 +63,7 @@ class ItemController extends Controller
     {
         $id = MyHelper::decrypt_id($encryptId);
         $itemDetail = Item::where('id', $id)
-                      ->with('category', 'placement_item.location')
+                      ->with('category', 'inventories.location')
                       ->first();
 
         if(!$itemDetail) {

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Resources\CategoryDetailResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -36,9 +39,22 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateCategoryRequest $request)
     {
-        //
+        try{
+            Category::create($request->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menambahkan kategori.'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan kategori!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

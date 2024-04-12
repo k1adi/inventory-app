@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateLocationRequest;
 use App\Http\Resources\LocationDetailResource;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
@@ -37,9 +38,22 @@ class LocationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateLocationRequest $request)
     {
-        //
+        try{
+            Location::create($request->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menambahkan lokasi.'
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan lokasi!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -48,7 +62,7 @@ class LocationController extends Controller
     public function show(string $encryptId)
     {
         $id = MyHelper::decrypt_id($encryptId);
-        $locationDetail = Location::where('id', $id)->with('placement_item.item', 'placement_item.user')->first();
+        $locationDetail = Location::where('id', $id)->with('inventories.item', 'inventories.user')->first();
 
         if(!$locationDetail){
             return response()->json([

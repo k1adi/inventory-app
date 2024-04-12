@@ -27,18 +27,21 @@ class UpdateInventoryRequest extends FormRequest
             'item_id' => ['required', 'integer', 'exists:mst_items,id'],
             'location_id' => ['required', 'integer', 'exists:mst_locations,id'],
             'qty' => [ 'required', 'integer', function ($attr, $value, $fail) {
-                    $item = Item::findOrFail($this->item_id);
-                    
-                    // Hitung total qty pada placement_item berdasarkan item_id dari request
-                    $totalQty = Inventory::where('item_id', $this->item_id)
+                    $item = Item::find($this->item_id);
+                    if (!$item) {
+                        $fail('Gagal mendapatkan qty dengan ID item tersebut!');
+                    } else {
+                        // Hitung total qty pada placement_item berdasarkan item_id dari request
+                        $totalQty = Inventory::where('item_id', $this->item_id)
                         ->where('id', '!=', $this->route('inventory')->id) // Pengecualian untuk baris data yang sedang diedit
                         ->sum('qty');
-                    
-                    // Kurangi qty pada tabel item dengan total qty pada placement_item
-                    $availableQty = $item->qty - $totalQty;
-                    
-                    if ($value > $availableQty) {
+
+                        // Kurangi qty pada tabel item dengan total qty pada placement_item
+                        $availableQty = $item->qty - $totalQty;
+
+                        if ($value > $availableQty) {
                         $fail('Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: ' . $availableQty);
+                        }
                     }
                 },
             ],
