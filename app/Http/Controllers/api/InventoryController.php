@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateInventoryRequest;
+use App\Http\Requests\Api\UpdateInventoryRequest;
 use App\Http\Resources\InventoryDetailResource;
 use App\Http\Resources\InventoryResource;
 use App\Models\Inventory;
 use App\Models\Item;
 use App\Models\Location;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Psr\Http\Message\ResponseInterface;
 
 class InventoryController extends Controller
 {
@@ -80,9 +81,28 @@ class InventoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateInventoryRequest $request, string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $inventory = Inventory::find($id);
+        
+        if(!$inventory) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan inventori dengan ID tersebut!',
+                'data' => [],
+            ], 404);
+        }
+
+        try {
+            return $this->updateInventory($request->validated(), $inventory);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui inventori!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -116,7 +136,8 @@ class InventoryController extends Controller
         }
     }
 
-    public function handleInventory($request){
+    public function handleInventory($request)
+    {
         // Cek baris data pada table placement_item apakah memiliki item_id dan location_id yang sama
         $inventory = Inventory::where('item_id', $request['item_id'])
                     ->where('location_id', $request['location_id'])
@@ -131,25 +152,39 @@ class InventoryController extends Controller
         return $this->createNewInventory($request);
     }
 
-    public function increaseQtyInventory($inventory, $qty){
+    public function updateInventory($request, $inventory)
+    {
+        if ($inventory->location_id == $request['location_id']) {
+            return $this->updateQtyInventory($inventory, $request['qty']);
+        } else {
+            return $this->validateCreateInventory($request);
+        }
+    }
+
+    public function increaseQtyInventory($inventory, $qty)
+    {
         try {
-            $inventory->qty = $qty;
+            $inventory->qty += $qty;
             $inventory->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil menambahkan qty pada item dan lokasi yang tersebut.'
+                'message' => 'Berhasil menambahkan qty pada item dan lokasi tersebut.'
             ], 200);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
     }
 
-    public function createNewInventory($request){
-        $userId = Auth::id();
-        $userName = Auth::user()->name;
-        $item = Item::find($request['item_id']);
-        $location = Location::find($request['location_id']);
+    public function createNewInventory($request)
+    {
+        
+        // $userId = Auth::id();
+        // $userName = Auth::user()->name;
+        $userId = 11; // Menggunakan data statis karena masih belum ada auth
+        $userName = 'admin'; // Menggunakan data statis karena masih belum ada auth
+        $item = Item::findOrFail($request['item_id']);
+        $location = Location::findOrFail($request['location_id']);
         
         try {
             Inventory::create([
@@ -169,6 +204,45 @@ class InventoryController extends Controller
             ], 201);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
+        }
+    }
+
+    public function updateQtyInventory($inventory, $qty)
+    {
+        try {
+            $inventory->qty = $qty;
+            $inventory->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil memperbarui qty pada item dan lokasi tersebut.'
+            ], 200);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
+    public function validateCreateInventory($request)
+    {
+        $itemQty = Item::find($request['item_id'])->qty;
+        $inventoryQty = Inventory::where('item_id', $request['item_id'])->sum('qty');
+        $remainingQty = $itemQty - $inventoryQty;
+
+        // Cek jika qty yang diinput tidak melebihi qty yang tersedia
+        if($request['qty'] > $remainingQty) {
+            // throw ValidationException::withMessages([
+            //     'qty' => ['Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty]
+            // ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui inventori!',
+                'errors' => [
+                    'qty' => 'Jumlah qty yang di-input melebihi qty yang tersedia. Qty tersisa: '.$remainingQty
+                ]
+            ], 422);
+        } else {
+            // Jalankan fungsi tambah data baru pada table inventory
+            return $this->createNewInventory($request);
         }
     }
 }

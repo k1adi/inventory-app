@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateItemRequest;
+use App\Http\Requests\Api\UpdateItemRequest;
 use App\Http\Resources\ItemDetailResource;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
@@ -82,9 +83,34 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateItemRequest $request, string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $item = Item::find($id);
+
+        if(!$item){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan item dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $item->fill($request->validated());
+            $item->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil memperbarui item.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui item!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

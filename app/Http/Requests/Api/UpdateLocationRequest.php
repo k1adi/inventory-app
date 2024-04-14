@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
+use App\Helpers\MyHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateCategoryRequest extends FormRequest
+class UpdateLocationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +23,11 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $categoryId = $this->route('category')->id;
+        $encryptId = $this->route('location');
+        $id = MyHelper::decrypt_id($encryptId);
 
         return [
-            'name' => ['required', 'string', Rule::unique('mst_categories')->ignore($categoryId)],
+            'name' => ['required', 'string', Rule::unique('mst_locations')->ignore($id)],
         ];
     }
 }

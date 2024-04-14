@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateLocationRequest;
+use App\Http\Requests\Api\UpdateLocationRequest;
 use App\Http\Resources\LocationDetailResource;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
-use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
@@ -81,9 +81,34 @@ class LocationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateLocationRequest $request, string $encryptId)
     {
-        //
+        $id = MyHelper::decrypt_id($encryptId);
+        $location = Location::find($id);
+
+        if(!$location){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan lokasi dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $location->fill($request->validated());
+            $location->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil memperbarui lokasi.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui lokasi!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

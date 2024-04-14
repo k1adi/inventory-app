@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\Api\UpdateCategoryRequest;
 use App\Http\Resources\CategoryDetailResource;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -81,9 +81,34 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryRequest $request, string $id)
     {
-        //
+        $decryptId = MyHelper::decrypt_id($id);
+        $category = Category::find($decryptId);
+
+        if(!$category){
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak dapat menemukan kategori dengan ID tersebut!',
+            ], 404);
+        }
+
+        try {
+            $category->fill($request->validated());
+            $category->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil memperbarui kategori.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memperbarui kategori!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
