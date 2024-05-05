@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
     protected $table = 'mst_items';
     protected $fillable = ['code', 'name', 'qty', 'category_id'];
 
