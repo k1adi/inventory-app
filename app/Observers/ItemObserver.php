@@ -5,7 +5,8 @@ namespace App\Observers;
 use App\Models\ActivityLog;
 use App\Models\Item;
 use App\Notifications\ItemCreatedNotification;
-use Illuminate\Support\Facades\Http;
+use App\Notifications\WhacenterNotification;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 
 class ItemObserver
 {
@@ -15,16 +16,12 @@ class ItemObserver
     public function created(Item $item): void
     {
         ActivityLog::create([
-            'description' => "Created item - $item->name",
+            'description' => "Created item - $item->name with code - $item->code",
         ]);
-
-        Http::post('https://app.whacenter.com/api/send', [
-            'device_id' => env('WHACENTER_DEVICE_ID'),
-            'number' => env('WHACENTER_RECEIVER'),
-            'message' => 'RIZKI - Test sending message from observer with created item ' . $item->name
-        ]);
-
+        // Send notification without service
         $item->notify(new ItemCreatedNotification($item));
+        // Send notification with service
+        FacadesNotification::send($item, new WhacenterNotification($item));
     }
 
     /**

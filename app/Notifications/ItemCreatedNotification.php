@@ -28,7 +28,7 @@ class ItemCreatedNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [\App\Broadcasting\HttpChannel::class];
+        return [HttpChannel::class];
     }
 
     /**
@@ -39,7 +39,14 @@ class ItemCreatedNotification extends Notification implements ShouldQueue
         return [
             'device_id' => env('WHACENTER_DEVICE_ID'),
             'number' => env('WHACENTER_RECEIVER'),
-            'message' => 'RIZKI - Test sending message from notification with created item | ' . $this->item->name
+            'message' => "Hello, RIZKI.\n".
+                         "Test sending message from notification\n" .
+                         "created item " . $this->item->name . "\n" .
+                         "with code " . $this->item->code . 
+                         "and qty : " . $this->item->qty . "\n" .
+                         "-------------------------------------\n" .
+                         "Do not reply this message!\n".
+                         "this message was sent without service"
         ];
     }
 }
